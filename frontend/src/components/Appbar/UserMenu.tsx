@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { User } from '../../types';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { selectLogoutLoading } from '../../store/users/usersSlice';
-import { logout } from '../../store/users/usersThunk';
+import { logout } from '../../store/users/usersThunks';
 import {
   Avatar,
   Button,

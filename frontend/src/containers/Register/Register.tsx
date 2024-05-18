@@ -4,7 +4,7 @@ import {
   selectRegisterError,
   selectRegisterLoading,
 } from '../../store/users/usersSlice';
-import { register } from '../../store/users/usersThunk';
+import { register } from '../../store/users/usersThunks';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { LoadingButton } from '@mui/lab';
 import {
@@ -34,8 +34,7 @@ const Register = () => {
   const error = useAppSelector(selectRegisterError);
   const loading = useAppSelector(selectRegisterLoading);
   const navigate = useNavigate();
-  const { email, displayName, password } =
-    useAppSelector(selectRegisterState);
+  const { email, displayName, password } = useAppSelector(selectRegisterState);
 
   const fileInputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { files } = e.target;

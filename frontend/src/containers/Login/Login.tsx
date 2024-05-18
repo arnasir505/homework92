@@ -6,7 +6,7 @@ import {
   selectLoginError,
   selectLoginLoading,
 } from '../../store/users/usersSlice';
-import { login, loginWithGoogle } from '../../store/users/usersThunk';
+import { login, loginWithGoogle } from '../../store/users/usersThunks';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import { LoadingButton } from '@mui/lab';
 import {

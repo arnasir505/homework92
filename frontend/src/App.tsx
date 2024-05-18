@@ -3,6 +3,7 @@ import Appbar from './components/Appbar/Appbar';
 import Register from './containers/Register/Register';
 import Login from './containers/Login/Login';
 import { Typography } from '@mui/material';
+import Chat from './containers/Chat/Chat';
 
 const App = () => {
   return (
@@ -12,7 +13,7 @@ const App = () => {
       </header>
       <main>
         <Routes>
-          <Route path='/' element={<h1>Chat</h1>} />
+          <Route path='/' element={<Chat />} />
           <Route path='/register' element={<Register />} />
           <Route path='/login' element={<Login />} />
           <Route
