@@ -1,13 +1,9 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
+import { RegisterMutation } from '../../types';
 
 interface RegisterState {
-  data: {
-    email: string;
-    displayName: string;
-    avatar: string | undefined;
-    password: string;
-  };
+  data: RegisterMutation;
   filename: string;
 }
 

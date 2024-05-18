@@ -12,6 +12,7 @@ import {
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { usersReducer } from '../store/users/usersSlice';
 import { registerReducer } from '../store/register/registerSlice';
+import { chatReducer } from '../store/chat/chatSlice';
 
 const userPersistConfig = {
   key: 'ws-chat:users',
@@ -22,6 +23,7 @@ const userPersistConfig = {
 const rootReducer = combineReducers({
   users: persistReducer(userPersistConfig, usersReducer),
   register: registerReducer,
+  chat: chatReducer,
 });
 
 export const store = configureStore({
