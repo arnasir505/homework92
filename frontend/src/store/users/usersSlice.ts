@@ -5,6 +5,7 @@ import { login, loginWithGoogle, logout, register } from './usersThunk';
 
 interface UsersState {
   user: User | null;
+  onlineUsers: User[];
   registerLoading: boolean;
   registerError: ValidationError | null;
   loginLoading: boolean;
@@ -14,6 +15,7 @@ interface UsersState {
 
 const initialState: UsersState = {
   user: null,
+  onlineUsers: [],
   registerLoading: false,
   registerError: null,
   loginLoading: false,

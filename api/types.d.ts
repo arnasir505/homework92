@@ -1,3 +1,5 @@
+import { WebSocket } from 'ws';
+
 export interface UserFields {
   email: string;
   password: string;
@@ -6,4 +8,13 @@ export interface UserFields {
   displayName: string;
   googleID?: string;
   avatar?: string;
+}
+
+export interface ActiveConnections {
+  [id: string]: WebSocket;
+}
+
+export interface IncomingMessage {
+  type: string;
+  payload: string;
 }
