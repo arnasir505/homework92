@@ -32,27 +32,27 @@ const UserSchema = new Schema<UserFields, UserModel>(
         },
         message: 'This user is already registered!',
       },
-      password: {
-        type: String,
-        required: true,
-      },
-      token: {
-        type: String,
-        required: true,
-      },
-      role: {
-        type: String,
-        required: true,
-        enum: ['moderator', 'user'],
-        default: 'user',
-      },
-      displayName: {
-        type: String,
-        required: true,
-      },
-      googleID: String,
-      avatar: String,
     },
+    password: {
+      type: String,
+      required: true,
+    },
+    token: {
+      type: String,
+      required: true,
+    },
+    role: {
+      type: String,
+      required: true,
+      enum: ['moderator', 'user'],
+      default: 'user',
+    },
+    displayName: {
+      type: String,
+      required: true,
+    },
+    googleID: String,
+    avatar: String,
   },
   {
     versionKey: false,
