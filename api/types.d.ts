@@ -21,3 +21,10 @@ export interface IncomingMessage {
     text: string;
   };
 }
+
+export interface ChatMessageFields {
+  username: string;
+  text: string;
+  datetime: string;
+  avatar?: string;
+}

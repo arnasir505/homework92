@@ -16,6 +16,12 @@ const chat = createSlice({
   name: 'chat',
   initialState,
   reducers: {
+    setMessages: (
+      state,
+      { payload: messages }: PayloadAction<ChatMessage[]>
+    ) => {
+      state.messages = messages;
+    },
     updateMessages: (
       state,
       { payload: message }: PayloadAction<ChatMessage>
@@ -26,7 +32,7 @@ const chat = createSlice({
 });
 
 export const chatReducer = chat.reducer;
-export const { updateMessages } = chat.actions;
+export const { setMessages, updateMessages } = chat.actions;
 export const selectChatMessages = (state: RootState) => state.chat.messages;
 export const selectChatOnlineUsers = (state: RootState) =>
   state.chat.onlineUsers;

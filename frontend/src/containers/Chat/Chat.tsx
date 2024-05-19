@@ -10,13 +10,18 @@ import React, { useEffect, useRef, useState } from 'react';
 import { wsApiUrl } from '../../constants';
 import { IncomingMessage } from '../../types';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { updateMessages } from '../../store/chat/chatSlice';
+import {
+  selectChatMessages,
+  setMessages,
+  updateMessages,
+} from '../../store/chat/chatSlice';
 import { selectUser } from '../../store/users/usersSlice';
 import { Link } from 'react-router-dom';
 
 const Chat: React.FC = () => {
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectUser);
+  const chatMessages = useAppSelector(selectChatMessages);
   const [messageText, setMessageText] = useState('');
   const ws = useRef<WebSocket | null>(null);
 
@@ -49,12 +54,16 @@ const Chat: React.FC = () => {
     ws.current.addEventListener('message', (msg) => {
       const parsedMsg = JSON.parse(msg.data) as IncomingMessage;
 
-      if (parsedMsg.type === 'WELCOME') {
-        console.log(parsedMsg.payload);
-      }
-
-      if (parsedMsg.type === "NEW_MESSAGE") {
-        dispatch(updateMessages(parsedMsg.payload));
+      switch (parsedMsg.type) {
+        case 'SET_MESSAGES':
+          dispatch(setMessages(parsedMsg.payload));
+          break;
+        case 'NEW_MESSAGE':
+          dispatch(updateMessages(parsedMsg.payload));
+          break;
+        case 'WELCOME':
+          console.log(parsedMsg.payload);
+          break;
       }
     });
 
@@ -78,8 +87,13 @@ const Chat: React.FC = () => {
           container
           sx={{ flexDirection: 'column', borderLeft: '1px solid #aaa', pl: 4 }}
         >
-          <Grid item sx={{ height: '500px' }}>
+          <Grid item sx={{ height: '500px', overflowY: 'scroll' }}>
             Chat room
+            {chatMessages.map((msg) => (
+              <Grid item key={msg._id || Math.random().toString()}>
+                {msg.username}:{msg.text}
+              </Grid>
+            ))}
           </Grid>
           <Grid item>
             {user ? (

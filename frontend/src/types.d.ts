@@ -21,21 +21,28 @@ export interface User {
 }
 
 export interface ChatMessage {
+  _id?: string;
   username: string;
   text: string;
+  datetime: string;
 }
 
-export interface IncomingChatMessage {
+interface IncomingChatMessages {
+  type: 'SET_MESSAGES';
+  payload: ChatMessage[];
+}
+
+interface IncomingChatMessage {
   type: 'NEW_MESSAGE';
   payload: ChatMessage;
 }
 
-export interface IncomingWelcomeMessage {
+interface IncomingWelcomeMessage {
   type: 'WELCOME';
   payload: ChatMessage;
 }
 
-export type IncomingMessage = IncomingChatMessage | IncomingWelcomeMessage;
+export type IncomingMessage = IncomingChatMessages | IncomingChatMessage | IncomingWelcomeMessage;
 
 export interface RegisterResponse {
   user: User;
