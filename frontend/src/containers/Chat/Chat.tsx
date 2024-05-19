@@ -7,7 +7,6 @@ import {
   Typography,
 } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
-import { wsApiUrl } from '../../constants';
 import { IncomingMessage } from '../../types';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import {
@@ -38,7 +37,11 @@ const Chat: React.FC = () => {
       ws.current.send(
         JSON.stringify({
           type: 'SEND_MESSAGE',
-          payload: { username: user?.displayName, text: messageText, avatar: user?.avatar },
+          payload: {
+            username: user?.displayName,
+            text: messageText,
+            avatar: user?.avatar,
+          },
         })
       );
       setMessageText('');
@@ -46,8 +49,17 @@ const Chat: React.FC = () => {
   };
 
   useEffect(() => {
-    ws.current = new WebSocket(wsApiUrl);
-
+    if (!user) {
+      return;
+    }
+    ws.current = new WebSocket('ws://localhost:8000/chat');
+    ws.current.addEventListener('open', () => {
+      if (ws.current) {
+        ws.current.send(
+          JSON.stringify({ type: 'LOGIN', payload: { token: user?.token } })
+        );
+      }
+    });
     ws.current.addEventListener('close', () => {
       console.log('Connection closed');
     });
@@ -88,70 +100,80 @@ const Chat: React.FC = () => {
           container
           sx={{ flexDirection: 'column', borderLeft: '1px solid #aaa', pl: 3 }}
         >
-          <Grid
-            item
-            sx={{
-              height: '500px',
-              mb: 1,
-              overflowY: 'auto',
-              display: 'flex',
-              flexDirection: 'column-reverse',
-              alignItems: 'baseline'
-            }}
-          >
-            {chatMessages.map((msg, index) => {
-              const nextMessage = chatMessages[index + 1];
-              const isSameUsernameAsNext =
-                nextMessage && msg.username === nextMessage.username;
-              const isLastMessage = index === chatMessages.length - 1;
-              let username = msg.username;
-              if (isSameUsernameAsNext && !isLastMessage) {
-                username = '';
-              }
-              return (
-                <ChatBubble
-                  key={msg._id || Math.random().toString()}
-                  username={username}
-                  text={msg.text}
-                  datetime={msg.datetime}
-                  avatar={msg.avatar}
-                />
-              );
-            })}
-          </Grid>
-          <Grid item>
-            {user ? (
-              <Box
-                component='form'
-                sx={{ display: 'flex', gap: 2 }}
-                onSubmit={onMessageSubmit}
+          {user ? (
+            <>
+              <Grid
+                item
+                sx={{
+                  height: '500px',
+                  mb: 1,
+                  overflowY: 'auto',
+                  display: 'flex',
+                  flexDirection: 'column-reverse',
+                  alignItems: 'baseline',
+                }}
               >
-                <TextField
-                  autoFocus
-                  type='text'
-                  name='message'
-                  placeholder='Message'
-                  value={messageText}
-                  onChange={onMessageChange}
-                  size='small'
-                />
-                <Button type='submit'>Send</Button>
-              </Box>
-            ) : (
-              <Box sx={{ border: '1px solid #aaa', padding: 1 }}>
-                <Typography variant='body1' sx={{ textAlign: 'center' }}>
-                  <Link to='/login' style={{ color: '#4fc3f7' }}>
-                    Login
-                  </Link>
-                  &nbsp; or &nbsp;
-                  <Link to='/register' style={{ color: '#4fc3f7' }}>
-                    Register
-                  </Link>
-                  &nbsp; to send message
-                </Typography>
-              </Box>
-            )}
-          </Grid>
+                {chatMessages.map((msg, index) => {
+                  const nextMessage = chatMessages[index + 1];
+                  const isSameUsernameAsNext =
+                    nextMessage && msg.username === nextMessage.username;
+                  const isLastMessage = index === chatMessages.length - 1;
+                  let username = msg.username;
+                  if (isSameUsernameAsNext && !isLastMessage) {
+                    username = '';
+                  }
+                  return (
+                    <ChatBubble
+                      key={msg._id || Math.random().toString()}
+                      username={username}
+                      text={msg.text}
+                      datetime={msg.datetime}
+                      avatar={msg.avatar}
+                    />
+                  );
+                })}
+              </Grid>
+              <Grid item>
+                <Box
+                  component='form'
+                  sx={{ display: 'flex', gap: 2 }}
+                  onSubmit={onMessageSubmit}
+                >
+                  <TextField
+                    autoFocus
+                    type='text'
+                    name='message'
+                    placeholder='Message'
+                    value={messageText}
+                    onChange={onMessageChange}
+                    size='small'
+                  />
+                  <Button type='submit'>Send</Button>
+                </Box>
+              </Grid>
+            </>
+          ) : (
+            <Box
+              sx={{
+                height: '500px',
+                background: '#272727',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <Typography variant='h5'>
+                <Link to='/login' style={{ color: '#4fc3f7' }}>
+                  Login
+                </Link>
+                &nbsp; or &nbsp;
+                <Link to='/register' style={{ color: '#4fc3f7' }}>
+                  Register
+                </Link>
+                &nbsp; to join chat
+              </Typography>
+            </Box>
+          )}
         </Grid>
       </Grid>
     </Container>

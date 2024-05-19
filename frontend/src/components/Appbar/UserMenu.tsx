@@ -11,6 +11,7 @@ import {
   MenuItem,
 } from '@mui/material';
 import { apiUrl } from '../../constants';
+import { setMessages } from '../../store/chat/chatSlice';
 
 interface Props {
   user: User;
@@ -31,6 +32,7 @@ const UserMenu: React.FC<Props> = ({ user }) => {
 
   const handleLogout = async () => {
     await dispatch(logout());
+    dispatch(setMessages([]));
   };
 
   return (

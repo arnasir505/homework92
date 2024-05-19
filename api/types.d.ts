@@ -20,6 +20,7 @@ export interface IncomingMessage {
     username: string;
     text: string;
     avatar?: string;
+    token: string;
   };
 }
 

@@ -1,6 +1,7 @@
 import express from 'express';
 import { ActiveConnections, IncomingMessage } from '../types';
 import Chat from '../models/ChatMessage';
+import User from '../models/User';
 
 const chatRouter = express.Router();
 
@@ -27,6 +28,16 @@ export const mountChatRouter = () => {
 
       ws.on('message', async (msg) => {
         const parsedMsg = JSON.parse(msg.toString()) as IncomingMessage;
+
+        if (parsedMsg.type === 'LOGIN') {
+          const user = await User.findOne({ token: parsedMsg.payload.token });
+          ws.send(
+            JSON.stringify({
+              type: 'SET_ONLINEUSERS',
+              payload: { username: user?.displayName, avatar: user?.avatar },
+            })
+          );
+        }
 
         if (parsedMsg.type === 'SEND_MESSAGE') {
           const date = new Date();

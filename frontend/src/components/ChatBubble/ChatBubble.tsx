@@ -26,7 +26,13 @@ const ChatBubble: React.FC<Props> = ({ username, text, datetime, avatar }) => {
       </Box>
       <Grid
         item
-        sx={{ background: '#272727', p: 1, mb: 1, borderRadius: '.5rem', marginLeft: (username ? 0 : 5) }}
+        sx={{
+          background: '#272727',
+          p: 1,
+          mb: 1,
+          borderRadius: '.5rem',
+          marginLeft: username ? 0 : 5,
+        }}
       >
         <Typography sx={{ color: stc(username), fontSize: '.9rem' }}>
           {username}
