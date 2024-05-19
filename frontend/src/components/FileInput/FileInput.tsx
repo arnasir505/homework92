@@ -68,7 +68,6 @@ const FileInput: React.FC<Props> = ({
       <Grid container direction='row' spacing={2} alignItems='center'>
         <Grid item xs>
           <TextField
-            fullWidth
             inputProps={{ readOnly: true }}
             label={label}
             value={filename}

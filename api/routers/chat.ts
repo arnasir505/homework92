@@ -11,7 +11,12 @@ export const mountChatRouter = () => {
     console.log('Client connected with id =', id);
     activeConnections[id] = ws;
 
-    ws.send('Successfully connected to chat!');
+    ws.send(
+      JSON.stringify({
+        type: 'WELCOME',
+        payload: 'Successfully connected to chat!',
+      })
+    );
 
     ws.on('message', (msg) => {
       const parsedMsg = JSON.parse(msg.toString()) as IncomingMessage;
@@ -20,7 +25,10 @@ export const mountChatRouter = () => {
         Object.values(activeConnections).forEach((connection) => {
           const outgoingMessage = {
             type: 'NEW_MESSAGE',
-            payload: parsedMsg.payload,
+            payload: {
+              username: parsedMsg.payload.username,
+              text: parsedMsg.payload.text,
+            },
           };
           connection.send(JSON.stringify(outgoingMessage));
         });

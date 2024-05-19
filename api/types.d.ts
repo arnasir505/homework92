@@ -16,5 +16,8 @@ export interface ActiveConnections {
 
 export interface IncomingMessage {
   type: string;
-  payload: string;
+  payload: {
+    username: string;
+    text: string;
+  };
 }

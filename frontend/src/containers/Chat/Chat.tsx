@@ -1,13 +1,68 @@
-import { Container, Grid } from '@mui/material';
+import {
+  Box,
+  Button,
+  Container,
+  Grid,
+  TextField,
+  Typography,
+} from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 import { wsApiUrl } from '../../constants';
+import { IncomingMessage } from '../../types';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { updateMessages } from '../../store/chat/chatSlice';
+import { selectUser } from '../../store/users/usersSlice';
+import { Link } from 'react-router-dom';
 
 const Chat: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const user = useAppSelector(selectUser);
   const [messageText, setMessageText] = useState('');
   const ws = useRef<WebSocket | null>(null);
 
+  const onMessageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setMessageText(e.target.value);
+  };
+
+  const onMessageSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!ws.current) return;
+
+    if (messageText !== '') {
+      ws.current.send(
+        JSON.stringify({
+          type: 'SEND_MESSAGE',
+          payload: { username: user?.displayName, text: messageText },
+        })
+      );
+      setMessageText('');
+    }
+  };
+
   useEffect(() => {
     ws.current = new WebSocket(wsApiUrl);
+
+    ws.current.addEventListener('close', () => {
+      console.log('Connection closed');
+    });
+
+    ws.current.addEventListener('message', (msg) => {
+      const parsedMsg = JSON.parse(msg.data) as IncomingMessage;
+
+      if (parsedMsg.type === 'WELCOME') {
+        console.log(parsedMsg.payload);
+      }
+
+      if (parsedMsg.type === "NEW_MESSAGE") {
+        dispatch(updateMessages(parsedMsg.payload));
+      }
+    });
+
+    return () => {
+      if (ws.current) {
+        ws.current.close();
+      }
+    };
   }, []);
 
   return (
@@ -26,7 +81,39 @@ const Chat: React.FC = () => {
           <Grid item sx={{ height: '500px' }}>
             Chat room
           </Grid>
-          <Grid item>Input</Grid>
+          <Grid item>
+            {user ? (
+              <Box
+                component='form'
+                sx={{ display: 'flex', gap: 2 }}
+                onSubmit={onMessageSubmit}
+              >
+                <TextField
+                  autoFocus
+                  type='text'
+                  name='message'
+                  placeholder='Message'
+                  value={messageText}
+                  onChange={onMessageChange}
+                  size='small'
+                />
+                <Button type='submit'>Send</Button>
+              </Box>
+            ) : (
+              <Box sx={{ border: '1px solid #aaa', padding: 1 }}>
+                <Typography variant='body1' sx={{ textAlign: 'center' }}>
+                  <Link to='/login' style={{ color: '#4fc3f7' }}>
+                    Login
+                  </Link>
+                  &nbsp; or &nbsp;
+                  <Link to='/register' style={{ color: '#4fc3f7' }}>
+                    Register
+                  </Link>
+                  &nbsp; to send message
+                </Typography>
+              </Box>
+            )}
+          </Grid>
         </Grid>
       </Grid>
     </Container>

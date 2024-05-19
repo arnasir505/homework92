@@ -85,7 +85,6 @@ const Login = () => {
             <Grid item xs={12}>
               <TextField
                 required
-                fullWidth
                 label='Email'
                 name='email'
                 autoComplete='new-email'
@@ -96,7 +95,6 @@ const Login = () => {
             <Grid item xs={12}>
               <TextField
                 required
-                fullWidth
                 name='password'
                 label='Password'
                 type='password'

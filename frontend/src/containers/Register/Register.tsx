@@ -80,7 +80,6 @@ const Register = () => {
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
-                fullWidth
                 type='email'
                 label='Email'
                 name='email'
@@ -94,7 +93,6 @@ const Register = () => {
             </Grid>
             <Grid item xs={12}>
               <TextField
-                fullWidth
                 label='Name'
                 name='displayName'
                 autoComplete='new-name'
@@ -118,7 +116,6 @@ const Register = () => {
             </Grid>
             <Grid item xs={12}>
               <TextField
-                fullWidth
                 name='password'
                 label='Password'
                 type='password'
