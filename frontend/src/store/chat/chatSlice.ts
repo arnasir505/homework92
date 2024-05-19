@@ -26,7 +26,7 @@ const chat = createSlice({
       state,
       { payload: message }: PayloadAction<ChatMessage>
     ) => {
-      state.messages.push(message);
+      state.messages.unshift(message);
     },
   },
 });

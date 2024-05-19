@@ -17,6 +17,7 @@ import {
 } from '../../store/chat/chatSlice';
 import { selectUser } from '../../store/users/usersSlice';
 import { Link } from 'react-router-dom';
+import ChatBubble from '../../components/ChatBubble/ChatBubble';
 
 const Chat: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -85,15 +86,35 @@ const Chat: React.FC = () => {
           xs={12}
           sm={9}
           container
-          sx={{ flexDirection: 'column', borderLeft: '1px solid #aaa', pl: 4 }}
+          sx={{ flexDirection: 'column', borderLeft: '1px solid #aaa', pl: 3 }}
         >
-          <Grid item sx={{ height: '500px', overflowY: 'scroll' }}>
-            Chat room
-            {chatMessages.map((msg) => (
-              <Grid item key={msg._id || Math.random().toString()}>
-                {msg.username}:{msg.text}
-              </Grid>
-            ))}
+          <Grid
+            item
+            sx={{
+              height: '500px',
+              mb: 1,
+              overflowY: 'auto',
+              flexDirection: 'column-reverse',
+              display: 'flex',
+            }}
+          >
+            {chatMessages.map((msg, index) => {
+              const nextMessage = chatMessages[index + 1];
+              const isSameUsernameAsNext =
+                nextMessage && msg.username === nextMessage.username;
+              const isLastMessage = index === chatMessages.length - 1;
+              let username = msg.username;
+              if (isSameUsernameAsNext && !isLastMessage) {
+                username = '';
+              }
+              return (
+                <ChatBubble
+                  key={msg._id || Math.random().toString()}
+                  username={username}
+                  text={msg.text}
+                />
+              );
+            })}
           </Grid>
           <Grid item>
             {user ? (
