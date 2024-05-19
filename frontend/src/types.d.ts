@@ -25,6 +25,7 @@ export interface ChatMessage {
   username: string;
   text: string;
   datetime: string;
+  avatar?: string;
 }
 
 interface IncomingChatMessages {

@@ -38,7 +38,7 @@ const Chat: React.FC = () => {
       ws.current.send(
         JSON.stringify({
           type: 'SEND_MESSAGE',
-          payload: { username: user?.displayName, text: messageText },
+          payload: { username: user?.displayName, text: messageText, avatar: user?.avatar },
         })
       );
       setMessageText('');
@@ -94,8 +94,9 @@ const Chat: React.FC = () => {
               height: '500px',
               mb: 1,
               overflowY: 'auto',
-              flexDirection: 'column-reverse',
               display: 'flex',
+              flexDirection: 'column-reverse',
+              alignItems: 'baseline'
             }}
           >
             {chatMessages.map((msg, index) => {
@@ -112,6 +113,8 @@ const Chat: React.FC = () => {
                   key={msg._id || Math.random().toString()}
                   username={username}
                   text={msg.text}
+                  datetime={msg.datetime}
+                  avatar={msg.avatar}
                 />
               );
             })}

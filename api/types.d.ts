@@ -19,6 +19,7 @@ export interface IncomingMessage {
   payload: {
     username: string;
     text: string;
+    avatar?: string;
   };
 }
 

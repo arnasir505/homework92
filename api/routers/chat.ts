@@ -19,6 +19,7 @@ export const mountChatRouter = () => {
           payload: 'Successfully connected to chat!',
         })
       );
+
       const chatMessages = await Chat.find()
         .sort({ datetime: 'desc' })
         .limit(30);
@@ -33,6 +34,7 @@ export const mountChatRouter = () => {
             username: parsedMsg.payload.username,
             text: parsedMsg.payload.text,
             datetime: date.toISOString(),
+            avatar: parsedMsg.payload.avatar,
           });
           await chatMessage.save();
 
@@ -42,6 +44,7 @@ export const mountChatRouter = () => {
               payload: {
                 username: parsedMsg.payload.username,
                 text: parsedMsg.payload.text,
+                avatar: parsedMsg.payload.avatar,
               },
             };
             connection.send(JSON.stringify(outgoingMessage));
@@ -54,7 +57,7 @@ export const mountChatRouter = () => {
         delete activeConnections[id];
       });
     } catch (e) {
-      next(e)
+      next(e);
     }
   });
 };

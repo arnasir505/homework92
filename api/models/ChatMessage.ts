@@ -15,6 +15,7 @@ const ChatSchema = new Schema<ChatMessageFields>(
       type: String,
       required: true,
     },
+    avatar: String,
   },
   {
     versionKey: false,
