@@ -26,9 +26,12 @@ export const mountChatRouter = () => {
         .limit(30);
       ws.send(JSON.stringify({ type: 'SET_MESSAGES', payload: chatMessages }));
 
-      const onlineUsers = await User.find({
-        isOnline: true,
-      }, {email: 0, token: 0, role: 0});
+      const onlineUsers = await User.find(
+        {
+          isOnline: true,
+        },
+        { email: 0, token: 0, role: 0 }
+      );
       ws.send(
         JSON.stringify({ type: 'SET_ONLINEUSERS', payload: onlineUsers })
       );

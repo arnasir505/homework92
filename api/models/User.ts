@@ -55,8 +55,8 @@ const UserSchema = new Schema<UserFields, UserModel>(
     avatar: String,
     isOnline: {
       type: Boolean,
-      required: true
-    }
+      required: true,
+    },
   },
   {
     versionKey: false,
