@@ -8,6 +8,9 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { BrowserRouter } from 'react-router-dom';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import theme from './theme';
+import { addInterceptors } from './axiosApi';
+
+addInterceptors(store);
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <Provider store={store}>

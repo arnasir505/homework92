@@ -14,6 +14,7 @@ import {
   selectChatMessages,
   selectChatOnlineUsers,
   setMessages,
+  setOnlineUsers,
   updateMessages,
   updateOnlineUsers,
 } from '../../store/chat/chatSlice';
@@ -54,18 +55,20 @@ const Chat: React.FC = () => {
     }
   };
 
-  useEffect(() => {
+  const connect = () => {
     if (!user) {
       return;
     }
     ws.current = new WebSocket('ws://localhost:8000/chat');
+
     ws.current.addEventListener('open', () => {
       if (ws.current) {
         ws.current.send(
-          JSON.stringify({ type: 'LOGIN', payload: { token: user?.token } })
+          JSON.stringify({ type: 'LOGIN', payload: { token: user.token } })
         );
       }
     });
+
     ws.current.addEventListener('close', () => {
       console.log('Connection closed');
     });
@@ -83,18 +86,34 @@ const Chat: React.FC = () => {
         case 'NEW_ONLINEUSER':
           dispatch(updateOnlineUsers(parsedMsg.payload));
           break;
+        case 'SET_ONLINEUSERS':
+          dispatch(setOnlineUsers(parsedMsg.payload));
+          break;
         case 'WELCOME':
           console.log(parsedMsg.payload);
           break;
       }
     });
 
+    ws.current.addEventListener('error', () => {
+      console.log(
+        'Connection closed. Reconnect will be attempted in 2 seconds'
+      );
+      setTimeout(() => {
+        void connect();
+      }, 2000);
+    });
+  };
+
+  useEffect(() => {
+    void connect();
+
     return () => {
       if (ws.current) {
         ws.current.close();
       }
     };
-  }, []);
+  }, [user?.token]);
 
   return (
     <Container>
@@ -105,7 +124,7 @@ const Chat: React.FC = () => {
           </Typography>
           {onlineUsers.map((user) => (
             <Box
-              sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}
+              sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}
               key={user._id}
             >
               <StyledBadge
@@ -114,7 +133,7 @@ const Chat: React.FC = () => {
                 variant='dot'
               >
                 <Avatar
-                  alt={user.username}
+                  alt={user.displayName}
                   src={
                     user.avatar?.includes('google')
                       ? user.avatar
@@ -123,7 +142,7 @@ const Chat: React.FC = () => {
                   sx={{ width: 32, height: 32 }}
                 />
               </StyledBadge>
-              <Typography>{user.username}</Typography>
+              <Typography>{user.displayName}</Typography>
             </Box>
           ))}
         </Grid>

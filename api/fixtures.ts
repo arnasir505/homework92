@@ -31,6 +31,7 @@ const run = async () => {
       role: 'moderator',
       displayName: 'Moderator',
       avatar: 'fixtures/modAvatar.png',
+      isOnline: false,
     },
     {
       email: 'usermaster@gmail.com',
@@ -38,6 +39,7 @@ const run = async () => {
       token: crypto.randomUUID(),
       role: 'user',
       displayName: 'User',
+      isOnline: false,
     }
   );
 

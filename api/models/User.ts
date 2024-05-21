@@ -53,6 +53,10 @@ const UserSchema = new Schema<UserFields, UserModel>(
     },
     googleID: String,
     avatar: String,
+    isOnline: {
+      type: Boolean,
+      required: true
+    }
   },
   {
     versionKey: false,

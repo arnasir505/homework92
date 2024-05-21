@@ -28,14 +28,33 @@ const chat = createSlice({
     ) => {
       state.messages.unshift(message);
     },
-    updateOnlineUsers: (state, { payload: user }: PayloadAction<OnlineUser>) => {
-      state.onlineUsers.push(user);
+    setOnlineUsers: (
+      state,
+      { payload: users }: PayloadAction<OnlineUser[]>
+    ) => {
+      state.onlineUsers = users;
+    },
+    updateOnlineUsers: (
+      state,
+      { payload: newUser }: PayloadAction<OnlineUser>
+    ) => {
+      const foundIndex = state.onlineUsers.findIndex(
+        (user) => user._id === newUser._id
+      );
+      if (foundIndex === -1) {
+        state.onlineUsers.push(newUser);
+      }
     },
   },
 });
 
 export const chatReducer = chat.reducer;
-export const { setMessages, updateMessages, updateOnlineUsers } = chat.actions;
+export const {
+  setMessages,
+  updateMessages,
+  setOnlineUsers,
+  updateOnlineUsers,
+} = chat.actions;
 export const selectChatMessages = (state: RootState) => state.chat.messages;
 export const selectChatOnlineUsers = (state: RootState) =>
   state.chat.onlineUsers;

@@ -22,7 +22,7 @@ export interface User {
 
 export interface OnlineUser {
   _id: string;
-  username: string;
+  displayName: string;
   avatar?: string;
 }
 
@@ -44,6 +44,11 @@ interface IncomingChatMessage {
   payload: ChatMessage;
 }
 
+interface IncomingOnlineUsersMessage {
+  type: 'SET_ONLINEUSERS';
+  payload: OnlineUser[];
+}
+
 interface IncomingOnlineUserMessage {
   type: 'NEW_ONLINEUSER';
   payload: OnlineUser;
@@ -57,6 +62,7 @@ interface IncomingWelcomeMessage {
 export type IncomingMessage =
   | IncomingChatMessages
   | IncomingChatMessage
+  | IncomingOnlineUsersMessage
   | IncomingOnlineUserMessage
   | IncomingWelcomeMessage;
 

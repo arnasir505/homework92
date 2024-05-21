@@ -8,6 +8,7 @@ export interface UserFields {
   displayName: string;
   googleID?: string;
   avatar?: string;
+  isOnline: boolean;
 }
 
 export interface ActiveConnections {

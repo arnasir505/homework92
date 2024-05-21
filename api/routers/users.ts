@@ -15,6 +15,7 @@ usersRouter.post('/', imagesUpload.single('avatar'), async (req, res, next) => {
       displayName: req.body.displayName,
       avatar: req.file ? req.file.filename : null,
       password: req.body.password,
+      isOnline: true,
     });
 
     user.generateToken();
@@ -96,6 +97,7 @@ usersRouter.post('/sessions/google', async (req, res, next) => {
         displayName,
         googleID: id,
         avatar,
+        isOnline: true,
       });
     }
 
@@ -124,6 +126,8 @@ usersRouter.delete('/sessions', async (req, res, next) => {
     if (!user) {
       return res.send(successMessage);
     }
+
+    await User.findOneAndUpdate({ token }, { isOnline: false });
 
     user.generateToken();
     await user.save();

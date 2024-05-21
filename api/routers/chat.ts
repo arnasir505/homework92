@@ -26,17 +26,29 @@ export const mountChatRouter = () => {
         .limit(30);
       ws.send(JSON.stringify({ type: 'SET_MESSAGES', payload: chatMessages }));
 
+      const onlineUsers = await User.find({
+        isOnline: true,
+      }, {email: 0, token: 0, role: 0});
+      ws.send(
+        JSON.stringify({ type: 'SET_ONLINEUSERS', payload: onlineUsers })
+      );
+
       ws.on('message', async (msg) => {
         const parsedMsg = JSON.parse(msg.toString()) as IncomingMessage;
 
         if (parsedMsg.type === 'LOGIN') {
-          const user = await User.findOne({ token: parsedMsg.payload.token });
+          const user = await User.findOneAndUpdate(
+            { token: parsedMsg.payload.token },
+            { isOnline: true }
+          );
+          await user?.save();
+
           Object.values(activeConnections).forEach((connection) => {
             const outgoingMessage = {
               type: 'NEW_ONLINEUSER',
               payload: {
                 _id: user?.id,
-                username: user?.displayName,
+                displayName: user?.displayName,
                 avatar: user?.avatar,
               },
             };
