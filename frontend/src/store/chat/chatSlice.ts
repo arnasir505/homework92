@@ -1,10 +1,10 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { ChatMessage, User } from '../../types';
+import { ChatMessage, OnlineUser } from '../../types';
 import { RootState } from '../../app/store';
 
 interface ChatState {
   messages: ChatMessage[];
-  onlineUsers: User[];
+  onlineUsers: OnlineUser[];
 }
 
 const initialState: ChatState = {
@@ -28,11 +28,14 @@ const chat = createSlice({
     ) => {
       state.messages.unshift(message);
     },
+    updateOnlineUsers: (state, { payload: user }: PayloadAction<OnlineUser>) => {
+      state.onlineUsers.push(user);
+    },
   },
 });
 
 export const chatReducer = chat.reducer;
-export const { setMessages, updateMessages } = chat.actions;
+export const { setMessages, updateMessages, updateOnlineUsers } = chat.actions;
 export const selectChatMessages = (state: RootState) => state.chat.messages;
 export const selectChatOnlineUsers = (state: RootState) =>
   state.chat.onlineUsers;

@@ -20,6 +20,12 @@ export interface User {
   avatar?: string;
 }
 
+export interface OnlineUser {
+  _id: string;
+  username: string;
+  avatar?: string;
+}
+
 export interface ChatMessage {
   _id?: string;
   username: string;
@@ -38,12 +44,21 @@ interface IncomingChatMessage {
   payload: ChatMessage;
 }
 
+interface IncomingOnlineUserMessage {
+  type: 'NEW_ONLINEUSER';
+  payload: OnlineUser;
+}
+
 interface IncomingWelcomeMessage {
   type: 'WELCOME';
   payload: ChatMessage;
 }
 
-export type IncomingMessage = IncomingChatMessages | IncomingChatMessage | IncomingWelcomeMessage;
+export type IncomingMessage =
+  | IncomingChatMessages
+  | IncomingChatMessage
+  | IncomingOnlineUserMessage
+  | IncomingWelcomeMessage;
 
 export interface RegisterResponse {
   user: User;

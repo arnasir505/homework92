@@ -31,12 +31,17 @@ export const mountChatRouter = () => {
 
         if (parsedMsg.type === 'LOGIN') {
           const user = await User.findOne({ token: parsedMsg.payload.token });
-          ws.send(
-            JSON.stringify({
-              type: 'SET_ONLINEUSERS',
-              payload: { username: user?.displayName, avatar: user?.avatar },
-            })
-          );
+          Object.values(activeConnections).forEach((connection) => {
+            const outgoingMessage = {
+              type: 'NEW_ONLINEUSER',
+              payload: {
+                _id: user?.id,
+                username: user?.displayName,
+                avatar: user?.avatar,
+              },
+            };
+            connection.send(JSON.stringify(outgoingMessage));
+          });
         }
 
         if (parsedMsg.type === 'SEND_MESSAGE') {

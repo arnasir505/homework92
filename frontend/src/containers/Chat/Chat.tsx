@@ -1,4 +1,5 @@
 import {
+  Avatar,
   Box,
   Button,
   Container,
@@ -11,17 +12,22 @@ import { IncomingMessage } from '../../types';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import {
   selectChatMessages,
+  selectChatOnlineUsers,
   setMessages,
   updateMessages,
+  updateOnlineUsers,
 } from '../../store/chat/chatSlice';
 import { selectUser } from '../../store/users/usersSlice';
 import { Link } from 'react-router-dom';
 import ChatBubble from '../../components/ChatBubble/ChatBubble';
+import { StyledBadge } from '../../theme';
+import { apiUrl } from '../../constants';
 
 const Chat: React.FC = () => {
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectUser);
   const chatMessages = useAppSelector(selectChatMessages);
+  const onlineUsers = useAppSelector(selectChatOnlineUsers);
   const [messageText, setMessageText] = useState('');
   const ws = useRef<WebSocket | null>(null);
 
@@ -74,6 +80,9 @@ const Chat: React.FC = () => {
         case 'NEW_MESSAGE':
           dispatch(updateMessages(parsedMsg.payload));
           break;
+        case 'NEW_ONLINEUSER':
+          dispatch(updateOnlineUsers(parsedMsg.payload));
+          break;
         case 'WELCOME':
           console.log(parsedMsg.payload);
           break;
@@ -91,7 +100,32 @@ const Chat: React.FC = () => {
     <Container>
       <Grid container sx={{ py: 5 }}>
         <Grid item xs={12} sm={3}>
-          Online users
+          <Typography sx={{ mb: 2, fontSize: '0.9rem' }}>
+            Online users
+          </Typography>
+          {onlineUsers.map((user) => (
+            <Box
+              sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}
+              key={user._id}
+            >
+              <StyledBadge
+                overlap='circular'
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                variant='dot'
+              >
+                <Avatar
+                  alt={user.username}
+                  src={
+                    user.avatar?.includes('google')
+                      ? user.avatar
+                      : `${apiUrl}/${user.avatar}`
+                  }
+                  sx={{ width: 32, height: 32 }}
+                />
+              </StyledBadge>
+              <Typography>{user.username}</Typography>
+            </Box>
+          ))}
         </Grid>
         <Grid
           item
